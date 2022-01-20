@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, {useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import { Button, Table } from 'antd';
@@ -110,7 +111,8 @@ export default function App() {
         "location": location,
         "categoryCodeId": 1,
         "holiday": false
-    };
+      };
+      
       setLog(prevLog => prevLog + `^ Updating WR ${wrId} ...\n`);
       try {
         await axios.put(`https://wr.tujuhsembilan.com/wr-be/workingReport/update?modelID=workingReportId:${wrId}`, data, config);
@@ -168,7 +170,12 @@ export default function App() {
     });
   };
   
-  const processTasks = () => {
+  const processTasks = async () => {
+    
+
+    if (!confirm('Are you sure?')) {
+      return;
+    }
 
     wrData.forEach(({regularTasks, workingReportId}) => {
       regularTasks.forEach(async (task, i) => {
@@ -195,7 +202,7 @@ export default function App() {
       <div style={{width: '100%', margin: '2em 0'}}>
         <Table bordered={true} columns={column} dataSource={data} pagination={false}></Table>
       </div>
-      <Button onClick={processTasks}>
+      <Button onClick={processTasks} disabled={!wrData || wrData.length <= 0}>
         Upload Data
       </Button>
       <div style={{marginTop: '1em', padding: '.5em 1em', borderRadius: '4px', background: '#eeeeee'}}>
